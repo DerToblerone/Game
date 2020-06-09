@@ -19,6 +19,15 @@ public class ObjectManager {
         objList.add(new GameObject(name,x,y,image));
     }
 
+    public void updateId (String index, float x, float y){
+        Iterator<GameObject> objectIterator = objList.iterator();
+        while(objectIterator.hasNext()){
+            GameObject tempObj = objectIterator.next();
+            if (tempObj.objName == index){
+                tempObj.setCoordinates(x,y);
+            }
+        }
+    }
 
 
     public void update(){

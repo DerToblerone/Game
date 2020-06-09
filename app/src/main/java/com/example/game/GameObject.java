@@ -6,7 +6,7 @@ import android.graphics.Xfermode;
 public class GameObject {
     private Sprite objSprite;
     private int x,y;
-    private String objName;
+    public String objName;
 
 
     public GameObject(String name, int X, int Y, Sprite image){
@@ -26,5 +26,10 @@ public class GameObject {
 
     public void draw(Canvas canvas){
         objSprite.draw(canvas);
+    }
+
+    public void setCoordinates(float _x, float _y){
+        x = (int)_x;
+        y = (int)_y;
     }
 }

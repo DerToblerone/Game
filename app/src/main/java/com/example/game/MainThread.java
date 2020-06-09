@@ -30,6 +30,7 @@ public class MainThread extends Thread{
                 synchronized (surfaceHolder) {
                     this.gameView.update();
                     this.gameView.draw(canvas);
+                    Thread.sleep(17);
                 }
             }catch(Exception e) {
             }
