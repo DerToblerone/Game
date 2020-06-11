@@ -66,7 +66,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
-        objManager.addObject("player", 0,0 , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test)));
+        objManager.addObject("player", 0,0 , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
         thread.setRunning(true);
         thread.start();
     }

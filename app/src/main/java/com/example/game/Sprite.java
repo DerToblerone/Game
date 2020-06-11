@@ -3,9 +3,12 @@ package com.example.game;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.util.DisplayMetrics;
 
 public class Sprite {
     private Bitmap image;
+    private Bitmap imageFlipped;
 
     private int x,y;
     protected int width, height;
@@ -17,6 +20,7 @@ public class Sprite {
 
     public Sprite(Bitmap bmp){
         image = bmp;
+        flip(bmp);
         x = 0;
         y = 0;
         width = image.getWidth();
@@ -28,9 +32,9 @@ public class Sprite {
 
     }
 
-    public void draw(Canvas canvas){
+    public void draw(Canvas canvas, boolean direction){
         if(show) {
-            canvas.drawBitmap(image, x, y, null);
+            canvas.drawBitmap(direction ? image : imageFlipped, x, y, null);
         }
     }
 
@@ -61,5 +65,15 @@ public class Sprite {
         y = y + y_vel;
 
         */
+    }
+
+    public void flip(Bitmap d)
+    {
+        Matrix m = new Matrix();
+        m.preScale(-1, 1);
+        Bitmap src = image;
+        Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, false);
+        dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+        imageFlipped = dst;
     }
 }
