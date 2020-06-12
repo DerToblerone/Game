@@ -1,5 +1,6 @@
 package com.example.game;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,14 +10,20 @@ import java.util.List;
 public class ObjectManager {
 
     private List<GameObject> objList;
+    private Sprite errorSprite;
 
+    public ObjectManager(Sprite error){
 
-    public ObjectManager(){
         objList = new ArrayList<>();
+        errorSprite = error;
     }
 
     public void addObject(String name, int x, int y, Sprite image){
         objList.add(new GameObject(name,x,y,image));
+    }
+
+    public void addBackground(String name, int r, int g, int b){
+        objList.add(new BackgroundObject(name,r,g,b,errorSprite));
     }
 
     public void updateId (String index, float x, float y){

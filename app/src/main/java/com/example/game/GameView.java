@@ -1,5 +1,6 @@
 package com.example.game;
 
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -14,6 +15,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
     private ObjectManager objManager;
+    private int screenWidth;
+    private int screenHeight;
 
     float newX, newY;
 
@@ -38,10 +41,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         this.setOnTouchListener(eventListener);
 
-        objManager = new ObjectManager();
+        objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test)));
 
         newX = 0;
         newY = 0;
+
+        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     }
 
@@ -66,7 +72,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
-        objManager.addObject("player", 0,0 , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
+        objManager.addBackground("floor",90,90,90);
+        objManager.addObject("player", (int)(screenWidth/2.0f),(int)(9.0f*screenHeight/10.0f) , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
         thread.setRunning(true);
         thread.start();
     }

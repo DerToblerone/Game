@@ -16,6 +16,9 @@ public class Sprite {
 
     private int screenWidth;
     private int screenHeight;
+
+    private int x_offset;
+    private int y_offset;
     private boolean show;
 
     public Sprite(Bitmap bmp){
@@ -27,14 +30,15 @@ public class Sprite {
         height = image.getHeight();
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-
+        x_offset = (int)width/2;
+        y_offset = (int)height/2;
         show = true;
 
     }
 
     public void draw(Canvas canvas, boolean direction){
         if(show) {
-            canvas.drawBitmap(direction ? image : imageFlipped, x, y, null);
+            canvas.drawBitmap(direction ? image : imageFlipped, x-x_offset, y-y_offset, null);
         }
     }
 
