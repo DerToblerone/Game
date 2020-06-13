@@ -6,12 +6,14 @@ import android.graphics.Paint;
 
 public class GameObject {
     public Sprite objSprite;
-    private int x,y;
+    public int x,y;
+    public String objType;
+
+
     private Paint paint;
     private float x_target;
     private float y_target;
-    private float x_offset;
-    private float y_offset;
+
     private float dir_x;
     private float dir_y;
 
@@ -29,13 +31,12 @@ public class GameObject {
         y = Y;
         x_target = X;
         y_target = Y;
-        x_offset = 0;
-        y_offset = 0;
         animIncrement= 1;
 
         dir_x = x_target - x;
         dir_y = y_target - y;
 
+        objType = "player";
 
     }
 

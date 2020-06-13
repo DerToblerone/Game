@@ -17,6 +17,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private ObjectManager objManager;
     private int screenWidth;
     private int screenHeight;
+    private int count; //framecounter
 
     float newX, newY;
 
@@ -27,6 +28,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             newX = event.getX();
             newY = event.getY();
             objManager.updateId("player",newX,newY);
+            objManager.updateType("seeker", 0, 0);
             return false;
         }
     };
@@ -49,6 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
+        count = 0;
     }
 
     @Override
@@ -73,13 +76,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder){
         objManager.addBackground("floor",90,90,90);
-        objManager.addObject("player", (int)(screenWidth/2.0f),(int)(9.0f*screenHeight/10.0f) , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
+        objManager.addObject("player","player", (int)(screenWidth/2.0f),(int)(9.0f*screenHeight/10.0f) , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
         thread.setRunning(true);
         thread.start();
     }
 
     public void update(){
+
+        if(count%200 == 0){
+            spawnEnmey((int)screenWidth/2, 0);
+        }
+
+        if (count%60 == 0){
+            objManager.updateType("seeker",0,0);
+        }
         objManager.update();
+        count++;
     }
 
     @Override
@@ -89,6 +101,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             objManager.draw(canvas);
 
         }
+    }
+
+    public void spawnEnmey(int x, int y){
+        objManager.addObject("seeker", "dat boi", x, y, new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test)));
     }
 
 
