@@ -11,6 +11,8 @@ public class ObjectManager {
 
     private List<GameObject> objList;
     private Sprite errorSprite;
+    private float x_player;
+    private float y_player;
 
     public ObjectManager(Sprite error){
 
@@ -18,7 +20,7 @@ public class ObjectManager {
         errorSprite = error;
     }
 
-    public void addObject(String type, String name, int x, int y, Sprite image){
+    public void addObject(String type, String name, float x, float y, Sprite image){
         if (type == "seeker"){
             objList.add(new seekerObject(name,x,y,image));
         }
@@ -32,18 +34,20 @@ public class ObjectManager {
     }
 
 
-    public int[] getPlayerPos (){
+    public float[] getPlayerPos (){
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
             if (tempObj.objName == "player"){
-                int[] tmp ={0,0};
+                float[] tmp ={0,0};
                 tmp[0] = tempObj.x;
-                tmp[1] = tempObj.y;
+                tmp[1] = tempObj.y;;
+                x_player = tmp[0];
+                y_player = tmp[1];
                 return tmp;
             }
         }
-        int[] errArray = {0,0};
+        float[] errArray = {0,0};
         return errArray;
     }
 
@@ -60,10 +64,15 @@ public class ObjectManager {
 
 
     public void update(){
+        getPlayerPos();
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
+            if (tempObj.objType == "seeker"){
+                tempObj.setPlayerPos(x_player, y_player);
+            }
             tempObj.update();
+
         }
     }
 
@@ -75,8 +84,8 @@ public class ObjectManager {
         }
     }
 
-    public void updateType(String type, int x, int y){
-        int[] target = getPlayerPos();
+    public void updateType(String type, float x, float y){
+        float[] target = getPlayerPos();
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();

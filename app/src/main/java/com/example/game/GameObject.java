@@ -6,7 +6,7 @@ import android.graphics.Paint;
 
 public class GameObject {
     public Sprite objSprite;
-    public int x,y;
+    public float x,y;
     public String objType;
 
 
@@ -17,21 +17,18 @@ public class GameObject {
     private float dir_x;
     private float dir_y;
 
-    int animIncrement;
-
 
     public String objName;
 
 
 
-    public GameObject(String name, int X, int Y, Sprite image){
+    public GameObject(String name, float X, float Y, Sprite image){
         objSprite = image;
         objName = name;
         x = X;
         y = Y;
         x_target = X;
         y_target = Y;
-        animIncrement= 1;
 
         dir_x = x_target - x;
         dir_y = y_target - y;
@@ -47,8 +44,8 @@ public class GameObject {
         if (absDistance > 0.2){
             dir_x = x_target - x;
             //dir_y = y_target - y;
-            x = (int)(x + 0.05*dir_x + signum((dir_x)));
-            y = (int)(y + 0.05*dir_y);
+            x = (float)(x + 0.05*dir_x + signum(dir_x)/60);
+            y = (float)(y + 0.05*dir_y);
         }
 
         //am ende sprite update
@@ -62,8 +59,8 @@ public class GameObject {
     }
 
     public void setCoordinates(float _x, float _y){
-        x_target = (int)_x;
-        y_target = (int)_y;
+        x_target = _x;
+        y_target = _y;
     }
 
 
@@ -93,6 +90,10 @@ public class GameObject {
         public static final int SIGN_BIT_MASK = -2147483648;
         public static final int EXP_BIT_MASK = 2139095040;
         public static final int SIGNIF_BIT_MASK = 8388607;
+    }
+
+    public void setPlayerPos(float x, float y){
+
     }
 
 }

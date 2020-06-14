@@ -10,6 +10,9 @@ public class MainThread extends Thread{
     private GameView gameView;
     private boolean running;
     public static Canvas canvas;
+    private long lastTime;
+    private double fps;
+    private long timeDifference;
 
     public MainThread(SurfaceHolder surfaceHolder, GameView gameView){
 
@@ -23,14 +26,16 @@ public class MainThread extends Thread{
     @Override
     public void run(){
         while(running){
+            lastTime = System.currentTimeMillis();
             canvas = null;
 
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
+
                     this.gameView.update();
                     this.gameView.draw(canvas);
-                    Thread.sleep(17);
+
                 }
             }catch(Exception e) {
             }
@@ -44,10 +49,22 @@ public class MainThread extends Thread{
                     }
                 }
             }
+            timeDifference = System.currentTimeMillis() -lastTime;
+            if (timeDifference < 32){
+                try {
+                    Thread.sleep(31 - timeDifference);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            fps = 1000.0 / (System.currentTimeMillis() - lastTime);
 
         }
 
     }
 
+    public double fps(){
+        return fps;
+    }
     public void setRunning(boolean isRunning){ running = isRunning; }
 }

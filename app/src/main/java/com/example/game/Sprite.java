@@ -9,7 +9,7 @@ import android.util.DisplayMetrics;
 public class Sprite {
     private Bitmap image;
     private Bitmap imageFlipped;
-
+    private Bitmap imagePresent;
     private int x,y;
     protected int width, height;
 
@@ -23,7 +23,8 @@ public class Sprite {
 
     public Sprite(Bitmap bmp){
         image = bmp;
-        flip(bmp);
+        flip();
+        rotate(0);
         x = 0;
         y = 0;
         width = image.getWidth();
@@ -38,15 +39,15 @@ public class Sprite {
 
     public void draw(Canvas canvas, boolean direction){
         if(show) {
-            canvas.drawBitmap(direction ? image : imageFlipped, x-x_offset, y-y_offset, null);
+            canvas.drawBitmap(direction ? imagePresent : imageFlipped, x-x_offset, y-y_offset, null);
         }
     }
 
-    public void update(int X, int Y){ // gibt dem Sprite eine neue Position und entscheidet ob es gezeigt wird
-        x = X;
-        y = Y;
+    public void update(float X, float Y){ // gibt dem Sprite eine neue Position und entscheidet ob es gezeigt wird
+        x = (int)(X*screenWidth);
+        y = (int)(Y*screenHeight);
 
-        if(x + width < 0 || x > screenWidth || y + height < 0 || y > screenHeight){
+        if(x + width < 0 || x > screenWidth || y + height < 0 || y-width/2 > screenHeight){
             show = false;
         }
         else{
@@ -71,7 +72,7 @@ public class Sprite {
         */
     }
 
-    public void flip(Bitmap d)
+    public void flip()
     {
         Matrix m = new Matrix();
         m.preScale(-1, 1);
@@ -79,5 +80,15 @@ public class Sprite {
         Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, false);
         dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
         imageFlipped = dst;
+    }
+
+    public void rotate(float angle)
+    {
+        Matrix m = new Matrix();
+        m.preRotate(angle);
+        Bitmap src = image;
+        Bitmap dst = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), m, true);
+        dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+        imagePresent= dst;
     }
 }
