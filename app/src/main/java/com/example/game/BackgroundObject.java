@@ -13,6 +13,7 @@ public class BackgroundObject extends GameObject {
         r = r_;
         g = g_;
         b = b_;
+        objSprite.update(0.5f,0.5f);
 
     }
 
@@ -24,6 +25,7 @@ public class BackgroundObject extends GameObject {
     @Override
     public void draw(Canvas canvas){
         canvas.drawARGB(100, r, g,b );
+        objSprite.draw(canvas, true);
     }
 
 }

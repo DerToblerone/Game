@@ -3,6 +3,7 @@ package com.example.game;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -29,6 +30,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //Sprite resources
     private Sprite seekerSprite;
+    private Sprite healthOverlaySprite;
+    private Sprite healthBarSprite;
 
 
 
@@ -37,12 +40,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     float newX, newY;
     float healthPercent;
 
+    private boolean gameOver;
+
+    //menu rects
+    private  Rect retryButton;
+
 
     private OnTouchListener eventListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            newX = event.getX()/screenWidth;
-            newY = event.getY()/screenHeight;
+            float x = event.getX();
+            float y = event.getY();
+            if(gameOver){
+                if (retryButton.left < x && x < retryButton.right && retryButton.top > y && y > retryButton.bottom){
+                    gameOver = false;
+                    initGame();
+                }
+                return false;
+            }
+            newX = x/screenWidth;
+            newY = y/screenHeight;
             if (newX <  0.2){
             newX = 0;
             }
@@ -58,6 +75,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context){
         super(context);
 
+
+
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(), this); //Programmablauf wird hier abgewickelt
@@ -68,21 +87,41 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         rng = new Random();
 
         setFocusable(true);
-
-        this.setOnTouchListener(eventListener);
-
-        objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test)));
-
-        newX = 0;
-        newY = 0;
-
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker));
+        this.setOnTouchListener(eventListener);
+
+
+
+
+        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker), 0.05f, 0.08f);
+        healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayhealth), 1.0f, 0.08f);
+        healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbar), 1.0f, 0.075f);
+
+        //menu items:
+        retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
+
+
+        initGame();
+    }
+
+    public void initGame(){
+        objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test),0.05f,0.05f));
+
+        objManager.addBackground("floor",90,90,190, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.hintergrund),1,1));
+        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire),0.15f, 0.1f));
+
+        newX = 0;
+        newY = 0;
+        healthOverlaySprite.update(0.5f, 0.04f);
+        healthOverlaySprite.update(0.5f, 0.037f);
+
 
         healthPercent = 1.0f;
 
+
+        gameOver = false;
 
         count = 0;
     }
@@ -108,14 +147,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
-        objManager.addBackground("floor",90,90,190);
-        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire)));
         thread.setRunning(true);
         thread.start();
     }
 
     public void update(){
+        if (gameOver){
+
+            return;
+        }
         if (healthPercent < 0){
+            gameOver = true;
             return;
         }
 
@@ -142,11 +184,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void drawUI(Canvas canvas){
-        paint.setColor(Color.GREEN);
-        canvas.drawRect(0,0,screenWidth*objManager.getHealthPercent(),screenHeight/12, paint);
+        //paint.setColor(Color.GREEN);
+        //canvas.drawRect(0,0,screenWidth*objManager.getHealthPercent(),screenHeight/12, paint);
         paint.setColor(Color.WHITE);
-        canvas.drawText(Double.toString(thread.fps()),10,50,paint);//bei canvas muss mit pixeln gearbeitet werden
-        canvas.drawText(Double.toString(objManager.getHealthPercent()),10,110,paint);//bei canvas muss mit pixeln gearbeitet werden
+        healthBarSprite.update(-0.5f + objManager.getHealthPercent(),0.037f);
+        healthBarSprite.draw(canvas,true);
+        healthOverlaySprite.draw(canvas, true);
+        Rect retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
+
+        if (gameOver){
+            paint.setColor(Color.argb(180,0,0,0));
+            paint.setTextSize(screenHeight/9);
+            canvas.drawRect(retryButton, paint);
+
+            paint.setColor(Color.argb(255,125,90,130));
+
+            canvas.drawText("Game Over", 0,screenHeight/2,paint);
+
+            paint.setTextSize(screenHeight/18);
+            canvas.drawText("git gud and try again", 0,3*screenHeight/5,paint);
+
+        }
+        //        paint.setTextSize(50);
+        //canvas.drawText(Double.toString(thread.fps()),10,50,paint);//bei canvas muss mit pixeln gearbeitet werden
+        //canvas.drawText(Double.toString(objManager.getHealthPercent()),10,110,paint);//bei canvas muss mit pixeln gearbeitet werden
 
     }
 

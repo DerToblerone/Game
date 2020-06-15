@@ -24,8 +24,8 @@ public class ObjectManager {
         objList = new ArrayList<>();
         delIndexList = new ArrayList<>();
         errorSprite = error;
-        playerHealth = 200;
-        maxPlayerHealth = 200;
+        playerHealth = 100;
+        maxPlayerHealth = 100;
     }
 
     public void addObject(String type, String name, float x, float y, Sprite image){
@@ -37,8 +37,8 @@ public class ObjectManager {
         }
     }
 
-    public void addBackground(String name, int r, int g, int b){
-        objList.add(new BackgroundObject(name,r,g,b,errorSprite));
+    public void addBackground(String name, int r, int g, int b, Sprite backgroundSprite){
+        objList.add(new BackgroundObject(name,r,g,b,backgroundSprite));
     }
 
 

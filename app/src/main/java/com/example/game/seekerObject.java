@@ -37,7 +37,7 @@ public class seekerObject extends GameObject {
     @Override
     public void update() {
         damageValue = 0;
-        if (Math.abs(x- x_player) + Math.abs(y-y_player) < 0.2){
+        if (Math.abs(x- x_player) + Math.abs(y-y_player) < 0.05){
             damageValue = 10;
             exist = false;
 

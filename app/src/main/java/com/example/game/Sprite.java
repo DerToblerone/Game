@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.util.DisplayMetrics;
 
 public class Sprite {
+    private Bitmap sourceBitmap;
     private Bitmap image;
     private Bitmap imageFlipped;
     private Bitmap imagePresent;
@@ -17,20 +18,28 @@ public class Sprite {
     private int screenWidth;
     private int screenHeight;
 
+    private float sizeRatio_x;
+    private float sizeRatio_y;
+
     private int x_offset;
     private int y_offset;
     private boolean show;
 
-    public Sprite(Bitmap bmp){
-        image = bmp;
+    public Sprite(Bitmap bmp, float size_x, float size_y){
+        sourceBitmap = bmp;
+        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+
+        image = Bitmap.createScaledBitmap(sourceBitmap, (int)(screenWidth*size_x), (int)(screenHeight*size_y), true);
+        sizeRatio_x = size_x;
+        sizeRatio_y = size_y;
         flip();
         rotate(0);
         x = 0;
         y = 0;
         width = image.getWidth();
         height = image.getHeight();
-        screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+
         x_offset = (int)width/2;
         y_offset = (int)height/2;
         show = true;
@@ -93,6 +102,6 @@ public class Sprite {
     }
 
     public Sprite clone(){
-        return( new Sprite(image.copy(image.getConfig(),true)));
+        return( new Sprite(sourceBitmap.copy(sourceBitmap.getConfig(),true),sizeRatio_x,sizeRatio_y));
     }
 }
