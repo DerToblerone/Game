@@ -10,12 +10,14 @@ public class seekerObject extends GameObject {
     private float x_player;
     private float y_player;
 
+
     public seekerObject(String name, float X, float Y, Sprite image){
         super(name,X,Y,image);
         x_dir = 0;
         y_dir = 0;
         setTarget(500,1000);
         objType = "seeker";
+        exist = true;
 
     }
 
@@ -49,6 +51,9 @@ public class seekerObject extends GameObject {
         x += x_dir;
         y += y_dir;
 
+        if (y > 1.1){
+            exist = false;
+        }
         objSprite.update(x,y);
     }
 

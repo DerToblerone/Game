@@ -10,13 +10,17 @@ import java.util.List;
 public class ObjectManager {
 
     private List<GameObject> objList;
+    private List<Integer> delIndexList;
     private Sprite errorSprite;
     private float x_player;
     private float y_player;
 
+    private boolean kChanged;
+
     public ObjectManager(Sprite error){
 
         objList = new ArrayList<>();
+        delIndexList = new ArrayList<>();
         errorSprite = error;
     }
 
@@ -65,15 +69,60 @@ public class ObjectManager {
 
     public void update(){
         getPlayerPos();
+        int i = 0;
+        int[] k = new int[objList.size()];
+        kChanged = false;
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
-            if (tempObj.objType == "seeker"){
+            if (tempObj.objType == "seeker") {
                 tempObj.setPlayerPos(x_player, y_player);
+                if (tempObj.exist == false) {
+                    k[i] = i;
+                    kChanged = true;
+                    //delIndexList.add(i);
+                }
             }
             tempObj.update();
 
+            i++;
         }
+        if( kChanged){//delIndexList.size() > 0){
+        cleanupObjList(k);}
+    }
+    /*
+    public static void bytefill(byte[] array, byte value) {
+        int len = array.length;
+
+        if (len > 0){
+            array[0] = value;
+        }
+
+        //Value of i will be [1, 2, 4, 8, 16, 32, ..., len]
+        for (int i = 1; i < len; i += i) {
+            System.arraycopy(array, 0, array, i, ((len - i) < i) ? (len - i) : i);
+        }
+    }
+    */
+    private void cleanupObjList(int[] k){
+       /*
+        Iterator<Integer> indexIterator = delIndexList.iterator();
+        int index;
+        while(indexIterator.hasNext()) {
+            index = indexIterator.next();
+            objList.remove(index);
+        }
+        delIndexList.clear();
+        index = 0;
+
+        */
+       for (int i = k.length -1 ; i > 0; i--){
+           if (k[i] != 0){
+               objList.remove(k[i]);
+           }
+
+       }
+
     }
 
     public void draw(Canvas canvas){

@@ -91,4 +91,8 @@ public class Sprite {
         dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
         imagePresent= dst;
     }
+
+    public Sprite clone(){
+        return( new Sprite(image.copy(image.getConfig(),true)));
+    }
 }

@@ -18,6 +18,7 @@ public class GameObject {
     private float dir_y;
 
 
+    public boolean exist;
     public String objName;
 
 
@@ -33,6 +34,7 @@ public class GameObject {
         dir_x = x_target - x;
         dir_y = y_target - y;
 
+        exist = true;
         objType = "player";
 
     }

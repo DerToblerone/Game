@@ -26,6 +26,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
+
+    //Sprite resources
+    private Sprite seekerSprite;
+
+
+
     private Paint paint;
 
     float newX, newY;
@@ -72,6 +78,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
+        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker));
+
+
+
         count = 0;
     }
 
@@ -105,7 +115,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void update(){
 
         if(count%40 == 0){
-            spawnEnmey(1.0f/2.0f, 0);
+            spawnEnemey(1.0f/2.0f, 0, 2);
         }
 
         if (count%60 == 0){
@@ -125,9 +135,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void spawnEnmey(float x, float y){
-        float rng_x =rng.nextInt(100)/100.0f;
-        objManager.addObject("seeker", "dat boi", rng_x , y, new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker)));
+    public void spawnEnemey(float x, float y, int n){
+        float rng_x;
+        for (int i = 0; i <= n; i++){
+            rng_x =rng.nextInt(100)/100.0f;
+            Sprite tmp = seekerSprite.clone();
+            objManager.addObject("seeker", "dat boi", rng_x , y, tmp);
+        }
+
     }
 
 
