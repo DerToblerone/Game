@@ -14,6 +14,8 @@ public class ObjectManager {
     private Sprite errorSprite;
     private float x_player;
     private float y_player;
+    private int playerHealth;
+    private int maxPlayerHealth;
 
     private boolean kChanged;
 
@@ -22,6 +24,8 @@ public class ObjectManager {
         objList = new ArrayList<>();
         delIndexList = new ArrayList<>();
         errorSprite = error;
+        playerHealth = 200;
+        maxPlayerHealth = 200;
     }
 
     public void addObject(String type, String name, float x, float y, Sprite image){
@@ -118,6 +122,11 @@ public class ObjectManager {
         */
        for (int i = k.length -1 ; i > 0; i--){
            if (k[i] != 0){
+               GameObject tmp = objList.get(i);
+               int control = tmp.getDamageVal();
+               if (control != 0){
+                    playerHealth -= 10;
+               }
                objList.remove(k[i]);
            }
 
@@ -148,5 +157,9 @@ public class ObjectManager {
                 }
             }
         }
+    }
+
+    public float getHealthPercent(){
+        return playerHealth*1.0f/maxPlayerHealth;
     }
 }

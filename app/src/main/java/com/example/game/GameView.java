@@ -35,6 +35,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Paint paint;
 
     float newX, newY;
+    float healthPercent;
 
 
     private OnTouchListener eventListener = new OnTouchListener() {
@@ -80,6 +81,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker));
 
+        healthPercent = 1.0f;
 
 
         count = 0;
@@ -113,6 +115,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update(){
+        if (healthPercent < 0){
+            return;
+        }
 
         if(count%40 == 0){
             spawnEnemey(1.0f/2.0f, 0, 2);
@@ -122,6 +127,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             objManager.updateType("seeker",0,0);
         }
         objManager.update();
+        healthPercent = objManager.getHealthPercent();
         count++;
     }
 
@@ -129,10 +135,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas){
         super.draw(canvas);
         if(canvas != null){
-            canvas.drawText(Double.toString(thread.fps()),10,50,paint);//bei canvas muss mit pixeln gearbeitet werden
-            objManager.draw(canvas);
 
+            objManager.draw(canvas);
+            drawUI(canvas);
         }
+    }
+
+    public void drawUI(Canvas canvas){
+        paint.setColor(Color.GREEN);
+        canvas.drawRect(0,0,screenWidth*objManager.getHealthPercent(),screenHeight/12, paint);
+        paint.setColor(Color.WHITE);
+        canvas.drawText(Double.toString(thread.fps()),10,50,paint);//bei canvas muss mit pixeln gearbeitet werden
+        canvas.drawText(Double.toString(objManager.getHealthPercent()),10,110,paint);//bei canvas muss mit pixeln gearbeitet werden
+
     }
 
     public void spawnEnemey(float x, float y, int n){

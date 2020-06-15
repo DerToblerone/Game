@@ -20,6 +20,7 @@ public class GameObject {
 
     public boolean exist;
     public String objName;
+    private int damageValue;
 
 
 
@@ -36,6 +37,8 @@ public class GameObject {
 
         exist = true;
         objType = "player";
+
+        damageValue = 0;
 
     }
 
@@ -56,6 +59,7 @@ public class GameObject {
         objSprite.update(x,y);
     }
 
+    public int getDamageVal(){  return damageValue;    }
     public void draw(Canvas canvas){
         objSprite.draw(canvas,dir_x > 0 );
     }
