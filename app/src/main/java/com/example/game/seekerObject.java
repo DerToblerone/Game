@@ -37,25 +37,28 @@ public class seekerObject extends GameObject {
     @Override
     public void update() {
         damageValue = 0;
-        if (Math.abs(x- x_player) + Math.abs(y-y_player) < 0.05){
-            damageValue = 10;
-            exist = false;
+            x_target = x_player;
+            y_target = y_player;
 
-        }
-        else{
-            float x_delta = x_target-x;
             float y_delta = y_target -y;
-            float total = Math.abs(x_delta) + Math.abs(y_delta);
-            if (y_delta <- 200){
-                return;
-            }
-            float norm = (float)Math.sqrt(x_delta*x_delta + y_delta*y_delta);
+
+            float x_delta = x_target-x;
+
+            //float norm = (float)Math.sqrt(x_delta*x_delta + y_delta*y_delta);
             if (y_delta > 0.15) {
+                float total = Math.abs(x_delta) + Math.abs(y_delta);
                 x_dir =  (float) 0.01*x_delta / total;
                 y_dir =  (float) 0.01*y_delta / total;
                 float ang = (float)Math.atan(-x_delta/y_delta);
                 ang = (float)(ang*(180/Math.PI));
                 objSprite.rotate(ang);
+            }
+            else{
+                if (Math.abs(x- x_player) + Math.abs(y-y_player) < 0.05){
+                    damageValue = 10;
+                    exist = false;
+
+                }
             }
             x += x_dir;
             y += y_dir;
@@ -64,7 +67,7 @@ public class seekerObject extends GameObject {
                 exist = false;
             }
             objSprite.update(x,y);
-        }
+
 
     }
 

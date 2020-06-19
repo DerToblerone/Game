@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.ContentView;
+
 
 public class MainActivity extends Activity {
 
@@ -16,7 +18,7 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         setContentView(new GameView(this));//custom View klasse wird ausgewählt
 
         hideSystemUI();
@@ -30,6 +32,13 @@ public class MainActivity extends Activity {
             hideSystemUI();
         }
     }
+
+     @Override
+     protected void onPause(){
+        super.onPause();
+
+
+     }
 
 
     public void hideSystemUI (){

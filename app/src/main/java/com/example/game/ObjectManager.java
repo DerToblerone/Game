@@ -32,6 +32,11 @@ public class ObjectManager {
         if (type == "seeker"){
             objList.add(new seekerObject(name,x,y,image));
         }
+        else if (type == "laser"){
+            objList.add(new LaserBeamObj(name,x,y,image));
+
+
+        }
         else{
             objList.add(new GameObject(name,x,y,image));
         }
@@ -76,16 +81,21 @@ public class ObjectManager {
         int i = 0;
         int[] k = new int[objList.size()];
         kChanged = false;
-        Iterator<GameObject> objectIterator = objList.iterator();
-        while(objectIterator.hasNext()){
-            GameObject tempObj = objectIterator.next();
-            if (tempObj.objType == "seeker") {
+        for (GameObject tempObj : objList) {
+            if (tempObj.objType.equals("seeker") | tempObj.objType.equals("laser")) {
                 tempObj.setPlayerPos(x_player, y_player);
-                if (tempObj.exist == false) {
+                if (!tempObj.exist) {
                     k[i] = i;
                     kChanged = true;
                     //delIndexList.add(i);
-                }
+                }/*else if(tempObj.objType =="laser") {
+                    tempObj.setPlayerPos(x_player, y_player);
+                    if (tempObj.exist == false) {
+                        k[i] = i;
+                        kChanged = true;
+                        //delIndexList.add(i);
+                    }
+                }*/
             }
             tempObj.update();
 

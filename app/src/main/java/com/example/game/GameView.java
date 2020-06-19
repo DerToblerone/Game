@@ -30,6 +30,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     //Sprite resources
     private Sprite seekerSprite;
+    private Sprite laserSprite;
+
+
     private Sprite healthOverlaySprite;
     private Sprite healthBarSprite;
 
@@ -67,15 +70,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 newX = 1;
             }
             objManager.updateId("player",newX,newY);
-            objManager.updateType("seeker", 0, 0);
+            //objManager.updateType("seeker", 0, 0);
             return false;
         }
     };
 
     public GameView(Context context){
         super(context);
-
-
 
         getHolder().addCallback(this);
 
@@ -96,6 +97,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker), 0.05f, 0.08f);
+        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.laserblue), 0.03f, 0.12f);
         healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayhealth), 1.0f, 0.08f);
         healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbar), 1.0f, 0.075f);
 
@@ -161,11 +163,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
 
-        if(count%40 == 0){
+        if(rng.nextInt(50) < 1){
             spawnEnemey(1.0f/2.0f, 0, 2);
         }
 
-        if (count%60 == 0){
+        if (count%40 == 0){
             objManager.updateType("seeker",0,0);
         }
         objManager.update();
@@ -215,8 +217,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         float rng_x;
         for (int i = 0; i <= n; i++){
             rng_x =rng.nextInt(100)/100.0f;
-            Sprite tmp = seekerSprite.clone();
-            objManager.addObject("seeker", "dat boi", rng_x , y, tmp);
+
+            if (rng.nextBoolean()) {
+                Sprite tmp = seekerSprite.clone();
+                objManager.addObject("seeker", "redRocket", rng_x, y, tmp);
+            }
+            else{
+                Sprite tmp = laserSprite.clone();
+                objManager.addObject("laser", "greenBeam", rng_x, y, tmp);
+            }
         }
 
     }

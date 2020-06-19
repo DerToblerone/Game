@@ -46,7 +46,7 @@ public class GameObject {
         //code für logik
         float distance = x-x_target + y - y_target;
         float absDistance = Math.abs(distance);
-        if (absDistance > 0.2){
+        if (absDistance > 0.05){
             dir_x = x_target - x;
             //dir_y = y_target - y;
             x = (float)(x + 0.05*dir_x + signum(dir_x)/60);
