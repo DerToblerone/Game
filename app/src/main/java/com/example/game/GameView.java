@@ -1,9 +1,12 @@
 package com.example.game;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,6 +30,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
+    private DisplayMetrics metricsDisp;
+    private BitmapFactory.Options optionsBmp;
 
     //Sprite resources
     private Sprite seekerSprite;
@@ -39,6 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private Paint paint;
+    private Paint paintUI;
 
     float newX, newY;
     float healthPercent;
@@ -50,6 +56,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private OnTouchListener eventListener = new OnTouchListener() {
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             float x = event.getX();
@@ -85,6 +92,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.WHITE);
         paint.setTextSize(50);
 
+        paintUI = new Paint();
+        paintUI.setColor(Color.WHITE);
+        paintUI.setTextSize(50);
+
         rng = new Random();
 
         setFocusable(true);
@@ -93,13 +104,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         this.setOnTouchListener(eventListener);
 
+        metricsDisp = getResources().getDisplayMetrics();
+        optionsBmp = new BitmapFactory.Options();
+        optionsBmp.inDensity = 200;
+        optionsBmp.inScaled = true;
+        optionsBmp.inScreenDensity = metricsDisp.densityDpi;
 
 
 
-        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker), 0.05f, 0.08f);
-        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.laserblue), 0.03f, 0.12f);
-        healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayhealth), 1.0f, 0.08f);
-        healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbar), 1.0f, 0.075f);
+        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker,optionsBmp), 0.05f, 0.08f);
+        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.laserblue,optionsBmp), 0.03f, 0.12f);
+        healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayhealth,optionsBmp), 1.0f, 0.08f);
+        healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbar,optionsBmp), 1.0f, 0.075f);
 
         //menu items:
         retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
@@ -109,10 +125,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void initGame(){
-        objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test),0.05f,0.05f));
+        objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test, optionsBmp),0.05f,0.05f));
 
-        objManager.addBackground("floor",90,90,190, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.hintergrund),1,1));
-        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire),0.15f, 0.1f));
+
+        objManager.addBackground("floor",255,255, 0, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.hintergrund, optionsBmp),1,1));
+        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire, optionsBmp),0.15f, 0.1f));
 
         newX = 0;
         newY = 0;
@@ -193,6 +210,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         healthBarSprite.draw(canvas,true);
         healthOverlaySprite.draw(canvas, true);
         Rect retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
+        canvas.drawText("Score: " + objManager.getScore(), 0,screenHeight/22,paintUI);
+
 
         if (gameOver){
             paint.setColor(Color.argb(180,0,0,0));

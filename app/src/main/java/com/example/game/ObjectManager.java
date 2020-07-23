@@ -16,6 +16,8 @@ public class ObjectManager {
     private float y_player;
     private int playerHealth;
     private int maxPlayerHealth;
+    private int gameScore;
+    private int playerInvincible;
 
     private boolean kChanged;
 
@@ -26,6 +28,8 @@ public class ObjectManager {
         errorSprite = error;
         playerHealth = 100;
         maxPlayerHealth = 100;
+        gameScore = 0;
+        playerInvincible = 0;
     }
 
     public void addObject(String type, String name, float x, float y, Sprite image){
@@ -45,7 +49,9 @@ public class ObjectManager {
     public void addBackground(String name, int r, int g, int b, Sprite backgroundSprite){
         objList.add(new BackgroundObject(name,r,g,b,backgroundSprite));
     }
-
+    public int getScore(){
+        return gameScore;
+    }
 
     public float[] getPlayerPos (){
         Iterator<GameObject> objectIterator = objList.iterator();
@@ -81,10 +87,14 @@ public class ObjectManager {
         int i = 0;
         int[] k = new int[objList.size()];
         kChanged = false;
+        if(playerInvincible > 0){
+            playerInvincible--;
+        }
         for (GameObject tempObj : objList) {
             if (tempObj.objType.equals("seeker") | tempObj.objType.equals("laser")) {
                 tempObj.setPlayerPos(x_player, y_player);
                 if (!tempObj.exist) {
+                    gameScore++;
                     k[i] = i;
                     kChanged = true;
                     //delIndexList.add(i);
@@ -135,7 +145,10 @@ public class ObjectManager {
                GameObject tmp = objList.get(i);
                int control = tmp.getDamageVal();
                if (control != 0){
-                    playerHealth -= 10;
+                   if (playerInvincible == 0) {
+                       playerHealth -= control;
+                       playerInvincible = 20;
+                   }
                }
                objList.remove(k[i]);
            }
@@ -148,7 +161,14 @@ public class ObjectManager {
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
-            tempObj.draw(canvas);
+            if(playerInvincible >0 && tempObj.objType == "player"){
+                if (playerInvincible%3 == 0){
+                    tempObj.draw(canvas);
+                }
+            }
+            else {
+                tempObj.draw(canvas);
+            }
         }
     }
 

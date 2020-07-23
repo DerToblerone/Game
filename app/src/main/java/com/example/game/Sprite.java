@@ -30,6 +30,8 @@ public class Sprite {
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
+        //image = sourceBitmap.copy(sourceBitmap.getConfig(),true);
+        //imagePresent = sourceBitmap.copy(sourceBitmap.getConfig(),true);
         image = Bitmap.createScaledBitmap(sourceBitmap, (int)(screenWidth*size_x), (int)(screenHeight*size_y), true);
         sizeRatio_x = size_x;
         sizeRatio_y = size_y;

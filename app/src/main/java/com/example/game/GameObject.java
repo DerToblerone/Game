@@ -48,13 +48,16 @@ public class GameObject {
         float absDistance = Math.abs(distance);
         if (absDistance > 0.05){
             dir_x = x_target - x;
+            if(dir_x < 0.005 && dir_x > -0.005){
+                dir_x = 0;
+            }
             //dir_y = y_target - y;
             x = (float)(x + 0.05*dir_x + signum(dir_x)/60);
             y = (float)(y + 0.05*dir_y);
+
         }
 
         //am ende sprite update
-
 
         objSprite.update(x,y);
     }
