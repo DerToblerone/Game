@@ -55,8 +55,79 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //menu rects
     private  Rect retryButton;
 
+    private GestureDetector gestureDetector;
+    private GestureDetector.OnGestureListener gestureListener = new GestureDetector.OnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            float x = e.getX();
+            float y = e.getY();
+            if(gameOver){
+                if (retryButton.left < x && x < retryButton.right && retryButton.top > y && y > retryButton.bottom){
+                    gameOver = false;
+                    initGame();
+                }
+                return false;
+            }
+            newX = x/screenWidth;
+            newY = y/screenHeight;
 
-    private OnTouchListener eventListener = new OnTouchListener() {
+            if(newY < 0.3){
+                if(gameFrozen){
+                    gameFrozen = false;
+                }
+                else{
+                    gameFrozen = true;
+                }
+
+            }
+
+
+
+
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+
+            objManager.updateId("player",velocityX,velocityY);
+            //objManager.updateType("seeker", 0, 0);
+            return false;
+        }
+    };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        if(gestureDetector.onTouchEvent(event)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    };
+
+    /*private OnTouchListener eventListener = new OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -93,7 +164,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return false;
         }
     };
-
+    */
     public GameView(Context context){
         super(context);
 
@@ -114,7 +185,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-        this.setOnTouchListener(eventListener);
+        //this.setOnTouchListener(eventListener);
+
+        gestureDetector = new GestureDetector(context.getApplicationContext(), gestureListener);
+
 
         metricsDisp = getResources().getDisplayMetrics();
         optionsBmp = new BitmapFactory.Options();
@@ -124,8 +198,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
-        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.newseeker,optionsBmp), 0.05f, 0.08f);
-        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.sword,optionsBmp), 0.03f, 0.12f);
+        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.newseeker,optionsBmp), 0.07f, 0.08f);
+        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.sword,optionsBmp), 0.08f, 0.13f);
         healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayneu,optionsBmp), 1.0f, 0.2f);
         healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbarneu,optionsBmp), 1.0f, 0.075f);
 

@@ -40,7 +40,7 @@ public class LaserBeamObj extends GameObject {
          }
 
          y = y + 0.017f;
-        if (Math.abs(x- x_player) < 0.02f && Math.abs(y-y_player) < 0.05f){
+        if (Math.abs(x- x_player) < 0.03f && Math.abs(y-y_player) < 0.06f){
             damageValue = 10;
             exist = false;
 

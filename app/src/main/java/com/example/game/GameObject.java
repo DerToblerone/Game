@@ -14,6 +14,13 @@ public class GameObject {
     private float x_target;
     private float y_target;
 
+    private float x_velocity;
+    private float y_velocity;
+
+    private float v_max;
+
+
+
     private float dir_x;
     private float dir_y;
 
@@ -40,10 +47,16 @@ public class GameObject {
 
         damageValue = 0;
 
+        x_velocity = 0;
+        y_velocity = 0;
+
+        v_max = 2;
+
     }
 
     public void update(){
         //code für logik
+        /*
         float distance = x-x_target + y - y_target;
         float absDistance = Math.abs(distance);
         if (absDistance > 0.05){
@@ -56,7 +69,24 @@ public class GameObject {
             y = (float)(y + 0.05*dir_y);
 
         }
+        */
+        x = (float)(x + x_velocity/60);//x + 0.05*dir_x + signum(dir_x)/60);
+        //y = (float)(y + y_velocity);//y + 0.05*dir_y);
+        if (x_velocity > 0.01){
+            dir_x = 1;
+        }
+        else if(x_velocity < -0.01){
+            dir_x = -1;
+        }
+        if (x>1){
+            x = 1;
+        }
+        else if(x < 0){
+            x = 0;
+        }
 
+        x_velocity *= 0.9;
+        y_velocity *= 0.9;
         //am ende sprite update
 
         objSprite.update(x,y);
@@ -70,6 +100,15 @@ public class GameObject {
     public void setCoordinates(float _x, float _y){
         x_target = _x;
         y_target = _y;
+        x_velocity = _x/100;
+        y_velocity = _y/100;
+
+        if(x_velocity > v_max){
+            x_velocity = v_max;
+        }
+        else if(x_velocity < -v_max){
+            x_velocity = -v_max;
+        }
     }
 
 
