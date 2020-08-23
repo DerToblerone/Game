@@ -112,10 +112,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
-        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.seeker,optionsBmp), 0.05f, 0.08f);
-        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.laserblue,optionsBmp), 0.03f, 0.12f);
-        healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayhealth,optionsBmp), 1.0f, 0.08f);
-        healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbar,optionsBmp), 1.0f, 0.075f);
+        seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.newseeker,optionsBmp), 0.05f, 0.08f);
+        laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.sword,optionsBmp), 0.03f, 0.12f);
+        healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayneu,optionsBmp), 1.0f, 0.2f);
+        healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbarneu,optionsBmp), 1.0f, 0.075f);
 
         //menu items:
         retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
@@ -128,13 +128,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test, optionsBmp),0.05f,0.05f));
 
 
-        objManager.addBackground("floor",255,255, 0, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.hintergrund, optionsBmp),1,1));
-        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire, optionsBmp),0.15f, 0.1f));
+        objManager.addBackground("floor",255,255, 255, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.papier, optionsBmp),1,1));
+        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.playersprite, optionsBmp),0.15f, 0.1f));
 
         newX = 0;
         newY = 0;
-        healthOverlaySprite.update(0.5f, 0.04f);
-        healthOverlaySprite.update(0.5f, 0.037f);
+        //healthOverlaySprite.update(0.5f, 0.07f);
+        healthOverlaySprite.update(0.5f, 0.07f);
 
 
         healthPercent = 1.0f;
@@ -248,6 +248,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
     }
+
 
 
     /*
