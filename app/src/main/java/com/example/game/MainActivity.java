@@ -12,17 +12,20 @@ import androidx.annotation.ContentView;
 
 public class MainActivity extends Activity {
 
+    private GameView gameView;
+    private boolean activityActive;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activityActive = true;
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         //setContentView(R.layout.activity_main);
-        setContentView(new GameView(this));//custom View klasse wird ausgewählt
+        gameView = new GameView(this);
+        setContentView(gameView);//custom View klasse wird ausgewählt
 
         hideSystemUI();
-
     }
 
     @Override
@@ -36,7 +39,18 @@ public class MainActivity extends Activity {
      @Override
      protected void onPause(){
         super.onPause();
-         GameView tmp = findViewById(android.R.id.content);
+        gameView.pauseGame();
+        activityActive = false;
+     }
+
+     @Override
+     protected void onResume(){
+        super.onResume();
+        if(!activityActive){
+           gameView.resumeGame();
+            activityActive = true;
+            hideSystemUI();
+        }
 
      }
 

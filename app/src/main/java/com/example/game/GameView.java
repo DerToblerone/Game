@@ -29,6 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Random rng;
 
 
+    private boolean gameFrozen;
 
     private DisplayMetrics metricsDisp;
     private BitmapFactory.Options optionsBmp;
@@ -70,6 +71,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             newX = x/screenWidth;
             newY = y/screenHeight;
+
+            if(newY < 0.3){
+                if(gameFrozen){
+                gameFrozen = false;
+                }
+                else{
+                    gameFrozen = true;
+                }
+
+            }
+
             if (newX <  0.2){
             newX = 0;
             }
@@ -121,6 +133,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
 
 
+        gameFrozen=false;
         initGame();
     }
 
@@ -171,10 +184,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update(){
+        if(gameFrozen){
+            return;
+        }
         if (gameOver){
 
             return;
         }
+
         if (healthPercent < 0){
             gameOver = true;
             return;
@@ -194,6 +211,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas){
+        /*if(gameFrozen){
+            return;
+        }*/
         super.draw(canvas);
         if(canvas != null){
 
@@ -249,6 +269,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+
+    public void pauseGame(){
+        thread.setRunning(false);
+        while(true) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                //retry
+            }
+            break;
+
+        }
+        thread = null;
+    }
+
+    public void resumeGame(){
+        thread = new MainThread(getHolder(), this);
+        thread.setRunning(true);
+        thread.start();
+        //setFocusable(true);
+        this.requestFocus();
+    }
 
 
     /*

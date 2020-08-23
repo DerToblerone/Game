@@ -38,6 +38,7 @@ public class MainThread extends Thread{
 
                 }
             }catch(Exception e) {
+
             }
             finally{
                 if(canvas != null){
@@ -62,6 +63,7 @@ public class MainThread extends Thread{
         }
 
     }
+
 
     public double fps(){
         return fps;
