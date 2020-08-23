@@ -38,9 +38,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Sprite seekerSprite;
     private Sprite laserSprite;
 
+    private Sprite dragonHeadSprite;
+    private Sprite dragonBodySprite;
+
+
 
     private Sprite healthOverlaySprite;
     private Sprite healthBarSprite;
+    private Sprite scoreTabSprite;
+
+    private Sprite gameOverSprite;
+
+
 
 
 
@@ -51,6 +60,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     float healthPercent;
 
     private boolean gameOver;
+
+    private boolean gameInit;
 
     //menu rects
     private  Rect retryButton;
@@ -176,7 +187,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setTextSize(50);
 
         paintUI = new Paint();
-        paintUI.setColor(Color.WHITE);
+        paintUI.setColor(Color.BLUE);
         paintUI.setTextSize(50);
 
         rng = new Random();
@@ -200,14 +211,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         seekerSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.newseeker,optionsBmp), 0.07f, 0.08f);
         laserSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.sword,optionsBmp), 0.08f, 0.13f);
+        dragonHeadSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.dragonhead,optionsBmp), 0.13f, 0.16f);
+
+        dragonBodySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.dragonbody,optionsBmp), 0.05f, 0.06f);
+
         healthOverlaySprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.overlayneu,optionsBmp), 1.0f, 0.2f);
         healthBarSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.healthbarneu,optionsBmp), 1.0f, 0.075f);
+        scoreTabSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.scoreelement,optionsBmp), 0.45f, 0.1f);
+
+        gameOverSprite = new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.gameover,optionsBmp), 0.6f, 0.4f);
+        gameOverSprite.update(0.5f,0.5f);
 
         //menu items:
         retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
 
+        scoreTabSprite.update(0.76f, 0.165f);
 
         gameFrozen=false;
+        gameInit = false;
         initGame();
     }
 
@@ -216,7 +237,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         objManager.addBackground("floor",255,255, 255, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.papier, optionsBmp),1,1));
-        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.playersprite, optionsBmp),0.15f, 0.1f));
+        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.playersprite, optionsBmp),0.15f, 0.1f),null);
 
         newX = 0;
         newY = 0;
@@ -230,6 +251,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameOver = false;
 
         count = 0;
+
+        //test code:
+
+        Sprite tmp = dragonHeadSprite.clone();
+        Sprite tmp0 = dragonBodySprite.clone();
+
+        objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);
+        gameInit = true;
     }
 
     @Override
@@ -302,12 +331,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.WHITE);
         healthBarSprite.update(-0.5f + objManager.getHealthPercent(),0.037f);
         healthBarSprite.draw(canvas,true);
+        scoreTabSprite.draw(canvas,true);
         healthOverlaySprite.draw(canvas, true);
         Rect retryButton = new Rect(0,(int)(3*screenHeight/5),screenWidth,(int)(2*screenHeight/5));
-        canvas.drawText("Score: " + objManager.getScore(), 0,screenHeight/22,paintUI);
+        canvas.drawText("" + objManager.getScore(), screenWidth/1.15f,screenHeight/5.9f,paintUI);
 
 
-        if (gameOver){
+        if (gameOver){/*
             paint.setColor(Color.argb(180,0,0,0));
             paint.setTextSize(screenHeight/9);
             canvas.drawRect(retryButton, paint);
@@ -318,6 +348,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             paint.setTextSize(screenHeight/18);
             canvas.drawText("git gud and try again", 0,3*screenHeight/5,paint);
+            */
+            gameOverSprite.draw(canvas, true);
 
         }
         //        paint.setTextSize(50);
@@ -333,11 +365,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             if (rng.nextBoolean()) {
                 Sprite tmp = seekerSprite.clone();
-                objManager.addObject("seeker", "redRocket", rng_x, y, tmp);
+                objManager.addObject("seeker", "redRocket", rng_x, y, tmp,null);
             }
             else{
                 Sprite tmp = laserSprite.clone();
-                objManager.addObject("laser", "greenBeam", rng_x, y, tmp);
+                objManager.addObject("laser", "greenBeam", rng_x, y, tmp,null);
+            }
+            if(rng.nextInt(100) > 96){
+                Sprite tmp = dragonHeadSprite.clone();
+                Sprite tmp0 = dragonBodySprite.clone();
+
+                objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);
+                gameInit = true;
             }
         }
 
@@ -359,11 +398,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void resumeGame(){
+        if(!gameInit){
+            initGame();
+        }
+        if (thread == null){
         thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
         //setFocusable(true);
-        this.requestFocus();
+        this.requestFocus();}
     }
 
 

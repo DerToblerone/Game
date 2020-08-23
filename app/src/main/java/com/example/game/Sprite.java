@@ -58,7 +58,7 @@ public class Sprite {
         x = (int)(X*screenWidth);
         y = (int)(Y*screenHeight);
 
-        if(x + width < 0 || x > screenWidth || y + height < 0 || y-width/2 > screenHeight){
+        if(x + width < 0 || x - width > screenWidth || y + height < 0 || y-2*height > screenHeight){
             show = false;
         }
         else{

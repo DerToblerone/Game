@@ -32,12 +32,17 @@ public class ObjectManager {
         playerInvincible = 0;
     }
 
-    public void addObject(String type, String name, float x, float y, Sprite image){
+    public void addObject(String type, String name, float x, float y, Sprite image, Sprite image2){
         if (type == "seeker"){
             objList.add(new seekerObject(name,x,y,image));
         }
         else if (type == "laser"){
             objList.add(new LaserBeamObj(name,x,y,image));
+
+
+        }
+        else if (type == "dragon"){
+            objList.add(new DragonObject(name,x,y,image, image2));
 
 
         }
@@ -91,7 +96,7 @@ public class ObjectManager {
             playerInvincible--;
         }
         for (GameObject tempObj : objList) {
-            if (tempObj.objType.equals("seeker") | tempObj.objType.equals("laser")) {
+            if (tempObj.objType.equals("seeker") | tempObj.objType.equals("laser")| tempObj.objType.equals("dragon")) {
                 tempObj.setPlayerPos(x_player, y_player);
                 if (!tempObj.exist) {
                     gameScore++;
