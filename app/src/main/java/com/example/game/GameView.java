@@ -110,6 +110,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            objManager.updateId("player",-distanceX,distanceY);
             return false;
         }
 
@@ -122,7 +123,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
 
-            objManager.updateId("player",velocityX,velocityY);
+            //objManager.updateId("player",velocityX,velocityY);
             //objManager.updateType("seeker", 0, 0);
             return false;
         }

@@ -100,8 +100,8 @@ public class GameObject {
     public void setCoordinates(float _x, float _y){
         x_target = _x;
         y_target = _y;
-        x_velocity = _x/100;
-        y_velocity = _y/100;
+        x_velocity = _x/10;
+        y_velocity = _y/10;
 
         if(x_velocity > v_max){
             x_velocity = v_max;
