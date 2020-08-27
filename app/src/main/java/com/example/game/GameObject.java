@@ -50,7 +50,7 @@ public class GameObject {
         x_velocity = 0;
         y_velocity = 0;
 
-        v_max = 2;
+        v_max = 2.2f;
 
     }
 
@@ -71,6 +71,7 @@ public class GameObject {
         }
         */
         x = (float)(x + x_velocity/60);//x + 0.05*dir_x + signum(dir_x)/60);
+        y = (float)(y + y_velocity/60);
         //y = (float)(y + y_velocity);//y + 0.05*dir_y);
         if (x_velocity > 0.01){
             dir_x = 1;
@@ -100,8 +101,8 @@ public class GameObject {
     public void setCoordinates(float _x, float _y){
         x_target = _x;
         y_target = _y;
-        x_velocity = _x/10;
-        y_velocity = _y/10;
+        x_velocity = _x/8;
+        y_velocity = _y/8;
 
         if(x_velocity > v_max){
             x_velocity = v_max;

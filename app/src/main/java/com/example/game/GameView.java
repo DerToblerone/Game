@@ -48,8 +48,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Sprite scoreTabSprite;
 
     private Sprite gameOverSprite;
+    private int gameOanim;
+
+    private int screenShake;
+    private float screenShakeV;
 
 
+    private int enemyCounter;
 
 
 
@@ -110,7 +115,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            objManager.updateId("player",-distanceX,distanceY);
+            objManager.updateId("player",-distanceX,0, false);//distanceY,false);
             return false;
         }
 
@@ -122,6 +127,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
+            if (velocityY < -1){
+                return false;
+            }
 
             //objManager.updateId("player",velocityX,velocityY);
             //objManager.updateType("seeker", 0, 0);
@@ -236,9 +244,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void initGame(){
         objManager = new ObjectManager(new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.test, optionsBmp),0.05f,0.05f));
 
+        objManager.clearLists();
 
         objManager.addBackground("floor",255,255, 255, new Sprite(BitmapFactory.decodeResource(getResources(), R.drawable.papier, optionsBmp),1,1));
-        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.playersprite, optionsBmp),0.15f, 0.1f),null);
+        objManager.addObject("player","player", 1.0f/2.0f,9.0f/10.0f , new Sprite(BitmapFactory.decodeResource(getResources(),R.drawable.robovampire /*playersprite*/, optionsBmp),0.15f, 0.1f),null);
 
         newX = 0;
         newY = 0;
@@ -246,7 +255,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         healthOverlaySprite.update(0.5f, 0.07f);
 
 
-        healthPercent = 1.0f;
+        healthPercent = 1.0f;//1.0f;
 
 
         gameOver = false;
@@ -254,12 +263,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         count = 0;
 
         //test code:
-
+        //um den drachen zu spawnen, sollte nacher wo anders hin kommen
+/*
         Sprite tmp = dragonHeadSprite.clone();
         Sprite tmp0 = dragonBodySprite.clone();
 
-        objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);
+        objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);*/
+        gameOanim = 30;//animation beim sterben
+
+        screenShake = 0;
+        screenShakeV = 0;
+
+        enemyCounter = 0;
+
+
+
         gameInit = true;
+
+
     }
 
     @Override
@@ -292,6 +313,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
         if (gameOver){
+            if(gameOanim> 0){
+                float tmp =(float)(30 - gameOanim) - 8;
+                objManager.updateId("player",tmp/2,tmp, true);
+                gameOanim--;
+            }
 
             return;
         }
@@ -301,15 +327,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
 
-        if(rng.nextInt(50) < 1){
+        if(enemyCounter < 0){
             spawnEnemey(1.0f/2.0f, 0, 2);
+            enemyCounter = 80 - (int)(objManager.getScore()/15);
+            if(enemyCounter < 30)
+                enemyCounter = 30;
         }
+        else
+            enemyCounter--;
 
         if (count%40 == 0){
             objManager.updateType("seeker",0,0);
         }
         objManager.update();
+        float tmp = healthPercent;
         healthPercent = objManager.getHealthPercent();
+        if (healthPercent != tmp){
+            screenShake = 6;
+            screenShakeV = 30;
+        }
         count++;
     }
 
@@ -320,8 +356,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }*/
         super.draw(canvas);
         if(canvas != null){
-
+            canvas.drawARGB(255,255,255,255);
+            if (screenShake >0){
+                float tmp = (float)screenShake/screenShakeV;
+                canvas.scale(1 + tmp/2,1 + tmp/2);
+                canvas.translate(-screenWidth*(tmp)/10, -screenHeight*tmp/10);
+                screenShake--;
+            }
             objManager.draw(canvas);
+
             drawUI(canvas);
         }
     }
@@ -338,7 +381,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText("" + objManager.getScore(), screenWidth/1.15f,screenHeight/5.9f,paintUI);
 
 
-        if (gameOver){/*
+        if (gameOver){
+
+            /*
             paint.setColor(Color.argb(180,0,0,0));
             paint.setTextSize(screenHeight/9);
             canvas.drawRect(retryButton, paint);
@@ -360,6 +405,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void spawnEnemey(float x, float y, int n){
+        int score = objManager.getScore();
+            int i = 0;
+            float rng_x;
+            while(true){
+                rng_x =rng.nextInt(100)/100.0f;
+                if (rng.nextBoolean()) {
+                    Sprite tmp = seekerSprite.clone();
+                    objManager.addObject("seeker", "redRocket", rng_x, y, tmp,null);
+
+                }
+                else{
+                    Sprite tmp = laserSprite.clone();
+                    objManager.addObject("laser", "greenBeam", rng_x, y, tmp,null);
+
+                }
+                i++;
+                if(i > score/10 | i >5){
+                    break;
+                }
+            }
+
+            if(score > 80) {
+                if(rng.nextInt(100) > 70){
+                    Sprite tmp = dragonHeadSprite.clone();
+                    Sprite tmp0 = dragonBodySprite.clone();
+
+                    objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);
+
+                 }
+                else{
+                    rng_x =rng.nextInt(100)/100.0f;
+                    Sprite tmp = laserSprite.clone();
+                    objManager.addObject("laser", "greenBeam", rng_x, y, tmp,null);
+                }
+
+        }
+
+        /*
         float rng_x;
         for (int i = 0; i <= n; i++){
             rng_x =rng.nextInt(100)/100.0f;
@@ -367,19 +450,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (rng.nextBoolean()) {
                 Sprite tmp = seekerSprite.clone();
                 objManager.addObject("seeker", "redRocket", rng_x, y, tmp,null);
+                //screenShake = 6;
+                //screenShakeV = 60f;
             }
             else{
                 Sprite tmp = laserSprite.clone();
                 objManager.addObject("laser", "greenBeam", rng_x, y, tmp,null);
+                //screenShake = 6;
+                //screenShakeV = 60f;
             }
-            if(rng.nextInt(100) > 96){
+            if(rng.nextInt(100) > 94){
                 Sprite tmp = dragonHeadSprite.clone();
                 Sprite tmp0 = dragonBodySprite.clone();
 
                 objManager.addObject("dragon", "dragon", 0.5f, 0, tmp, tmp0);
-                gameInit = true;
+                //screenShake = 8;
+                //screenShakeV = 30f;
+                //gameInit = true;
             }
         }
+
+         */
 
     }
 
@@ -396,6 +487,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         }
         thread = null;
+        gameFrozen = true;
     }
 
     public void resumeGame(){

@@ -14,13 +14,13 @@ public class DragonObject extends GameObject {
 
     private Sprite bodySprite;
 
+    private int damageValue;
     private float phaseOffset;
 
-    private int damageValue;
     private Random rng;
 
 
-    public DragonObject(String name, float X, float Y, Sprite image, Sprite imageBody){
+    public DragonObject(String name, float X, float Y, Sprite image, Sprite imageBody) {
         super(name, X, Y, image);
         objType = "dragon";
         exist = true;
@@ -29,44 +29,53 @@ public class DragonObject extends GameObject {
         damageValue = 0;
         bodySprite = imageBody;
         rng = new Random();
-        phaseOffset = rng.nextFloat();
+        phaseOffset = rng.nextInt(360);
+        base_x += (rng.nextInt(100) -50)/200.0f;
 
-    };
+    }
+
+    ;
 
     @Override
-    public void setPlayerPos(float x_p, float y_p){
-        x_player =x_p;
+    public void setPlayerPos(float x_p, float y_p) {
+        x_player = x_p;
         y_player = y_p;
 
 
     }
 
     @Override
-    public void update(){
+    public void update() {
         y += speed;
-        x = base_x + 0.2f*(float)(Math.sin(15*y + phaseOffset));
+        x = base_x + 0.2f * (float) (Math.sin(15 * y + phaseOffset));
 
-        if (Math.abs(x- x_player) + Math.abs(y-y_player) < 0.05){
-            damageValue = 10;
+        if (Math.abs(x - x_player) + Math.abs(y - y_player) < 0.05) {
+            damageValue = 20;
             exist = false;
         }
 
-        if (y > 1.4){
+        if (y > 1.4) {
             exist = false;
         }
-        objSprite.update(x,y);
+        objSprite.update(x, y);
     }
 
-    public void draw(Canvas canvas){
+    public void draw(Canvas canvas) {
         float new_y;
         float ang;
-        for(int i = 15; i > 0; i--){
-            new_y = y - i*0.012f;
-            ang = (float) (18*Math.sin(15*new_y));
-            bodySprite.update( base_x + 0.2f*(float)(Math.sin(15*new_y + phaseOffset)), new_y);
+        for (int i = 15; i > 0; i--) {
+            new_y = y - i * 0.012f;
+            ang = (float) (18 * Math.sin(15 * new_y));
+            bodySprite.update(base_x + 0.2f * (float) (Math.sin(15 * new_y + phaseOffset)), new_y);
             bodySprite.rotate(ang);
-            bodySprite.draw(canvas,true);
+            bodySprite.draw(canvas, true);
         }
-        objSprite.draw(canvas,true);
+        objSprite.draw(canvas, true);
+    }
+
+
+    @Override
+    public int getDamageVal() {
+        return damageValue;
     }
 }

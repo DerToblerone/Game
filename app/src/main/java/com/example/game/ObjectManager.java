@@ -11,6 +11,10 @@ public class ObjectManager {
 
     private List<GameObject> objList;
     private List<Integer> delIndexList;
+    private List<ParticleEffect> particleEffectList;
+    private List<Integer> particleEffectDelList;
+
+
     private Sprite errorSprite;
     private float x_player;
     private float y_player;
@@ -25,11 +29,22 @@ public class ObjectManager {
 
         objList = new ArrayList<>();
         delIndexList = new ArrayList<>();
+        particleEffectList = new ArrayList<>();
+        particleEffectDelList = new ArrayList<>();
+
         errorSprite = error;
         playerHealth = 100;
         maxPlayerHealth = 100;
         gameScore = 0;
         playerInvincible = 0;
+    }
+
+    public void clearLists(){
+        particleEffectList.clear();
+        particleEffectDelList.clear();
+        objList.clear();
+        delIndexList.clear();
+
     }
 
     public void addObject(String type, String name, float x, float y, Sprite image, Sprite image2){
@@ -75,17 +90,23 @@ public class ObjectManager {
         return errArray;
     }
 
-    public void updateId (String index, float x, float y){
+    public void updateId (String index, float x, float y,boolean uFlag){
         Iterator<GameObject> objectIterator = objList.iterator();
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
             if (tempObj.objName == index){
                 tempObj.setCoordinates(x,y);
+                if(uFlag){
+                    tempObj.update();
+                }
                 break;
             }
         }
     }
 
+    public void addParticleEffect(float x, float y){
+        particleEffectList.add(new ParticleEffect(x,y,1, 20));
+    }
 
     public void update(){
         getPlayerPos();
@@ -118,6 +139,21 @@ public class ObjectManager {
         }
         if( kChanged){//delIndexList.size() > 0){
         cleanupObjList(k);}
+
+
+        Iterator<ParticleEffect> effectIterator = particleEffectList.iterator();
+
+        while(effectIterator.hasNext()){
+            ParticleEffect pEff = effectIterator.next();
+            pEff.update();
+
+            /*
+            if (pEff.update()){
+                particleEffectDelList.add(h);
+            }
+            h++;
+            */
+        }
     }
     /*
     public static void bytefill(byte[] array, byte value) {
@@ -149,12 +185,15 @@ public class ObjectManager {
            if (k[i] != 0){
                GameObject tmp = objList.get(i);
                int control = tmp.getDamageVal();
+               addParticleEffect(tmp.x,tmp.y);
                if (control != 0){
                    if (playerInvincible == 0) {
                        playerHealth -= control;
                        playerInvincible = 20;
+
                    }
                }
+
                objList.remove(k[i]);
            }
 
@@ -167,7 +206,7 @@ public class ObjectManager {
         while(objectIterator.hasNext()){
             GameObject tempObj = objectIterator.next();
             if(playerInvincible >0 && tempObj.objType == "player"){
-                if (playerInvincible%3 == 0){
+                if (playerInvincible%3 == 0 || playerHealth < 0){
                     tempObj.draw(canvas);
                 }
             }
@@ -175,6 +214,19 @@ public class ObjectManager {
                 tempObj.draw(canvas);
             }
         }
+        Iterator<ParticleEffect> effectIterator = particleEffectList.iterator();
+        while(effectIterator.hasNext()){
+            ParticleEffect pEff = effectIterator.next();
+            pEff.draw(canvas);
+
+        }
+/*
+        Iterator<Integer> iIter = particleEffectDelList.iterator();
+        while(iIter.hasNext()){
+            int tmp = iIter.next();
+            particleEffectList.remove(tmp);
+        }
+*/
     }
 
     public void updateType(String type, float x, float y){
